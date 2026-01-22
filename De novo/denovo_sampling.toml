@@ -1,0 +1,21 @@
+
+
+run_type = "sampling"
+device = "cuda:0"
+json_out_config = "energetic_mol_design/configs/denovo_sampling_config.json"
+
+
+[parameters]
+# 强化学习模型: energetic_mol_design/models/denovo_energetic_rl.chkpt
+model_file = "energetic_mol_design/models/denovo_energetic.model"
+# model_file = "energetic_mol_design/models/denovo_energetic_rl.chkpt"
+
+
+# output_file = "energetic_mol_design/outputs/denovo_sampling_tl.csv"
+# output_file = "energetic_mol_design/outputs/denovo_sampling_rl.csv"
+output_file = "energetic_mol_design/tests/denovo_sampling_test_tl.csv"
+
+
+num_smiles = 5000
+unique_molecules = true
+randomize_smiles = true

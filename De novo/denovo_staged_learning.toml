@@ -1,0 +1,95 @@
+
+
+run_type = "staged_learning"
+device = "cuda:0"
+tb_logdir = "energetic_mol_design/logs/tb_denovo_staged_learning"
+json_out_config = "energetic_mol_design/configs/denovo_sl_config.json"
+
+
+[parameters]
+
+prior_file = "priors/reinvent.prior"
+agent_file = "energetic_mol_design/models/denovo_energetic.model"
+
+summary_csv_prefix = "energetic_mol_design/outputs/denovo_rl"
+
+use_checkpoint = false
+purge_memories = false
+batch_size = 4
+unique_sequences = true
+randomize_smiles = true
+
+tb_isim = false
+
+
+[learning_strategy]
+type = "dap"
+sigma = 128
+rate = 0.0001
+
+
+[diversity_filter]
+type = "IdenticalMurckoScaffold"
+bucket_size = 25
+minscore = 0.2
+minsimilarity = 0.4
+penalty_multiplier = 0.5
+
+
+[[stage]]
+
+chkpt_file = "energetic_mol_design/models/denovo_energetic_rl.chkpt"
+termination = "simple"
+max_score = 0.95
+min_steps = 100
+max_steps = 500
+
+[stage.scoring]
+type = "geometric_mean"
+
+
+[[stage.scoring.component]]
+[stage.scoring.component.GroupCount]
+[[stage.scoring.component.GroupCount.endpoint]]
+name = "Nitro_Count"
+weight = 1.0
+params.smarts = "[N+](=O)[O-]"
+transform.type = "sigmoid"
+transform.high = 3.0
+transform.low = 0.0
+transform.k = 0.25
+
+
+[[stage.scoring.component]]
+[stage.scoring.component.GroupCount]
+[[stage.scoring.component.GroupCount.endpoint]]
+name = "N_Heterocycle_Count"
+weight = 0.8
+params.smarts = "[nR]"
+transform.type = "sigmoid"
+transform.high = 4.0
+transform.low = 0.0
+transform.k = 0.25
+
+
+[[stage.scoring.component]]
+[stage.scoring.component.NumHeteroAtoms]
+[[stage.scoring.component.NumHeteroAtoms.endpoint]]
+name = "HeteroAtom_Count"
+weight = 0.6
+transform.type = "sigmoid"
+transform.high = 8.0
+transform.low = 2.0
+transform.k = 0.25
+
+
+[[stage.scoring.component]]
+[stage.scoring.component.GroupCount]
+[[stage.scoring.component.GroupCount.endpoint]]
+name = "Fused_Ring_Count"
+weight = 0.8
+params.smarts = "[R2]"
+transform.type = "sigmoid"
+transform.high = 6.0
+transform.low = 1.0
+transform.k = 0.25

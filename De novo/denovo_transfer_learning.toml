@@ -1,0 +1,29 @@
+
+
+run_type = "transfer_learning"
+device = "cuda:0"
+tb_logdir = "energetic_mol_design/logs/tb_denovo_transfer_learning"
+json_out_config = "energetic_mol_design/configs/denovo_tl_config.json"
+
+
+[parameters]
+
+input_model_file = "priors/reinvent.prior"
+
+output_model_file = "energetic_mol_design/models/denovo_energetic.model"
+
+smiles_file = "energetic_mol_design/data/denovo_training_data.smi"
+validation_smiles_file = "energetic_mol_design/data/denovo_validation_data.smi"
+
+num_epochs = 50
+save_every_n_epochs = 10
+batch_size = 128
+sample_batch_size = 256
+
+standardize_smiles = true
+randomize_smiles = true
+randomize_all_smiles = false
+
+num_refs = 0
+tb_isim = false
+internal_diversity = true
